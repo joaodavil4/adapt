@@ -7,7 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.adapt.ui.question.BakingScreen
+import androidx.navigation.compose.rememberNavController
+import com.example.adapt.ui.navigation.AppNavigation
 import com.example.adapt.ui.question.QuestionScreen
 import com.example.adapt.ui.theme.AdaptTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,7 +24,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    QuestionScreen()
+                    AppNavigation(
+                        modifier = Modifier.fillMaxSize(),
+                        navController = rememberNavController() // Uncomment if using NavController
+                    )
                 }
             }
         }

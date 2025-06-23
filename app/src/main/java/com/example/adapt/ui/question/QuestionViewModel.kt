@@ -27,6 +27,12 @@ class QuestionViewModel @Inject constructor(
     private val _selectedColor = MutableStateFlow<String?>(null)
     val selectedColor: StateFlow<String?> = _selectedColor.asStateFlow()
 
+    fun onAction(action: QuestionAction) {
+        when (action) {
+            is QuestionAction.SaveFavoriteColor -> setFavoriteColor(action.color)
+        }
+    }
+
     init {
         viewModelScope.launch {
             getFavoriteColorUseCase().collectLatest { color ->
