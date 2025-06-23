@@ -14,11 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun QuestionScreen(
-    viewModel: QuestionViewModel = viewModel()
+    viewModel: QuestionViewModel = hiltViewModel()
 ) {
     val colors = listOf("Red", "Blue", "Green", "Yellow", "Purple")
     val selectedColor = viewModel.selectedColor.collectAsState()
