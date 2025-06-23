@@ -1,4 +1,4 @@
-package com.example.adapt.ui.screen
+package com.example.adapt.ui.question
 
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.BorderStroke
@@ -37,9 +37,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.adapt.BakingViewModel
+import com.example.adapt.ui.feedback.BakingViewModel
 import com.example.adapt.R
-import com.example.adapt.UiState
+import com.example.adapt.ui.UiState
 
 val images = arrayOf(
     // Image generated using Gemini from the prompt "cupcake image"

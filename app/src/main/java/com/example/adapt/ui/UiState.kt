@@ -1,4 +1,4 @@
-package com.example.adapt
+package com.example.adapt.ui
 
 /**
  * A sealed hierarchy describing the state of the text generation.

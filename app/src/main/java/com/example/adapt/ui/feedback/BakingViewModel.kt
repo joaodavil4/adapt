@@ -1,8 +1,10 @@
-package com.example.adapt
+package com.example.adapt.ui.feedback
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.adapt.BuildConfig
+import com.example.adapt.ui.UiState
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import kotlinx.coroutines.Dispatchers
