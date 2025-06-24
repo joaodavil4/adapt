@@ -9,7 +9,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.adapt.ui.question.QuestionScreen
+import com.example.adapt.ui.question.QuestionUI
 import com.example.adapt.ui.question.QuestionViewModel
 
 @Suppress("UnusedPrivateProperty")
@@ -28,7 +28,7 @@ fun AppNavigation(
             val questionScreenUiState by remember { questionViewModel.uiState }
                 .collectAsStateWithLifecycle()
 
-            QuestionScreen(
+            QuestionUI(
                 uiState = questionScreenUiState,
                 onAction = questionViewModel::onAction
             )

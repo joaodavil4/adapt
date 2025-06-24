@@ -1,62 +1,112 @@
 package com.example.adapt.ui.question
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.adapt.ui.UiState
+import com.example.adapt.ui.composables.CircularLayout
+import com.example.adapt.ui.composables.JellyButton
+import com.example.compose.AdaptTheme
+import com.example.compose.blue
+import com.example.compose.green
+import com.example.compose.purple
+import com.example.compose.red
+import com.example.compose.yellow
+
+@Composable
+fun QuestionUI(
+    uiState: QuestionUiState,
+    onAction: (QuestionAction) -> Unit,
+) {
+
+    QuestionScreen(
+        modifier = Modifier
+            .fillMaxSize(),
+        uiState = uiState,
+        onAction = onAction
+    )
+
+
+}
 
 @Composable
 fun QuestionScreen(
-    uiState: UiState,
+    modifier: Modifier = Modifier,
+    uiState: QuestionUiState,
     onAction: (QuestionAction) -> Unit,
 ) {
-    val colors = listOf("Red", "Blue", "Green", "Yellow", "Purple")
-//    val selectedColor = viewModel.selectedColor.collectAsState()
+    when (uiState) {
+        is QuestionUiState.Initial -> {
+            // Initial state, show the question
+            val colors = listOf(
+                red to "Red",
+                blue to "Blue",
+                green to "Green",
+                yellow to "Yellow",
+                purple to "Purple"
+            )
+            var selectedColor by remember { mutableStateOf(Color.White) }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Which is your favorite color?",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(16.dp)
-        )
+            // Create a transition for the background color
+            val transition =
+                updateTransition(targetState = selectedColor, label = "BackgroundColorTransition")
+            val animatedBackgroundColor by transition.animateColor(
+                label = "AnimatedBackgroundColor",
+                transitionSpec = { tween(durationMillis = 2000) } // Slow animation duration
+            ) { it }
 
-        Row(
-            modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            colors.forEach { color ->
-                Button(
-                    onClick = { onAction(QuestionAction.SaveFavoriteColor(color)) },
-                    modifier = Modifier.padding(8.dp)
-                ) {
-                    Text(text = color)
+
+            Box(
+                modifier = modifier
+                    .background(animatedBackgroundColor),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularLayout {
+                    colors.forEach { (color, name) ->
+                        JellyButton(
+                            color = color,
+                            title = name,
+                            onClick = {
+                                selectedColor = color
+                                onAction(QuestionAction.SaveFavoriteColor(name))
+                            }
+                        )
+                    }
                 }
+                Text(
+                    text = "Which is your favorite color?",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.Black
+                )
             }
         }
+
     }
 }
 
 @Preview(showSystemUi = true)
 @Composable
 fun QuestionScreenPreview() {
-    QuestionScreen(
-        uiState = UiState.Loading,
-        onAction = {}
-    )
+    AdaptTheme {
+        QuestionUI(
+            uiState = QuestionUiState.Initial(),
+            onAction = {}
+        )
+    }
+
 }

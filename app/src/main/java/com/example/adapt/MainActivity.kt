@@ -9,8 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.adapt.ui.navigation.AppNavigation
-import com.example.adapt.ui.question.QuestionScreen
-import com.example.adapt.ui.theme.AdaptTheme
+import com.example.compose.AdaptTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
