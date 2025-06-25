@@ -10,10 +10,13 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 @Composable
-fun CircularLayout(content: @Composable () -> Unit) {
+fun CircularLayout(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
     Layout(
         content = content,
-        modifier = Modifier.size(300.dp)
+        modifier = modifier.size(300.dp)
     ) { measurables, constraints ->
         val radius = constraints.maxWidth / 2
         val itemCount = measurables.size

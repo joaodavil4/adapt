@@ -3,6 +3,7 @@ package com.example.adapt.di
 import com.example.adapt.data.repository.UserRepository
 import com.example.adapt.domain.usecase.color.GetFavoriteColorUseCase
 import com.example.adapt.domain.usecase.color.SaveFavoriteColorUseCase
+import com.example.adapt.domain.usecase.color.SendPromptUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,5 +21,10 @@ object UseCaseModule {
     @Provides
     fun provideGetFavoriteColorUseCase(userRepository: UserRepository): GetFavoriteColorUseCase {
         return GetFavoriteColorUseCase(userRepository)
+    }
+
+    @Provides
+    fun provideSendPromptUseCase(): SendPromptUseCase {
+        return SendPromptUseCase()
     }
 }

@@ -4,11 +4,13 @@ import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,8 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import com.example.adapt.ui.composables.CircularLayout
+import com.example.adapt.ui.composables.ForwardButton
 import com.example.adapt.ui.composables.JellyButton
+import com.example.adapt.ui.composables.animations.ThreeDotsLoading
 import com.example.compose.AdaptTheme
 import com.example.compose.blue
 import com.example.compose.green
@@ -39,8 +45,6 @@ fun QuestionUI(
         uiState = uiState,
         onAction = onAction
     )
-
-
 }
 
 @Composable
@@ -59,7 +63,14 @@ fun QuestionScreen(
                 yellow to "Yellow",
                 purple to "Purple"
             )
-            var selectedColor by remember { mutableStateOf(Color.White) }
+            var selectedColor by remember {
+                mutableStateOf(
+                    uiState.selectedColor?.let {
+                        Color(it.toColorInt())
+                    } ?: Color.White
+                )
+            }
+
 
             // Create a transition for the background color
             val transition =
@@ -69,31 +80,102 @@ fun QuestionScreen(
                 transitionSpec = { tween(durationMillis = 2000) } // Slow animation duration
             ) { it }
 
+            LaunchedEffect(selectedColor) {
+                // Trigger the action to send the prompt when the color changes
+                onAction(QuestionAction.SendPrompt(selectedColor.toString()))
+            }
 
-            Box(
+
+            Column(
                 modifier = modifier
                     .background(animatedBackgroundColor),
-                contentAlignment = Alignment.Center
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CircularLayout {
-                    colors.forEach { (color, name) ->
-                        JellyButton(
-                            color = color,
-                            title = name,
-                            onClick = {
-                                selectedColor = color
-                                onAction(QuestionAction.SaveFavoriteColor(name))
+                Column(
+                    modifier = Modifier
+                        .weight(3f)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularLayout {
+                        colors.forEach { (color, name) ->
+                            JellyButton(
+                                color = color,
+                                title = name,
+                                onClick = {
+                                    selectedColor = color
+                                    onAction(QuestionAction.SaveFavoriteColor(name))
+                                }
+                            )
+                        }
+
+
+                    }
+                }
+
+
+
+
+
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Which is your favorite color?",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Black
+                    )
+
+                    if (uiState.isLoading) {
+                        ThreeDotsLoading(
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(top = 16.dp),
+                            dotSize = 23.dp,
+                            dotSpacing = 6.dp,
+                            animationDelay = 250,
+                            dotColor = Color.Black
+                        )
+                    } else {
+                        uiState.feedbackColor?.let {
+                            if (it.isNotEmpty()) {
+                                Text(
+                                    text = it,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = Color.Black,
+                                    modifier = Modifier
+                                        .align(Alignment.CenterHorizontally)
+                                        .padding(16.dp)
+                                )
                             }
+                        }
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (uiState.selectedColor != null) {
+                        ForwardButton(
+                            onClick = {
+//                                onAction(QuestionAction.Next)
+                            },
+                            color = selectedColor
                         )
                     }
                 }
-                Text(
-                    text = "Which is your favorite color?",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.Black
-                )
+
+
             }
+
+
         }
 
     }
