@@ -28,9 +28,6 @@ class QuestionViewModel @Inject constructor(
     val uiState: StateFlow<QuestionUiState> =
         _uiState.asStateFlow()
 
-    private val _selectedColor = MutableStateFlow<String?>(null)
-    val selectedColor: StateFlow<String?> = _selectedColor.asStateFlow()
-
     fun onAction(action: QuestionAction) {
         when (action) {
             is QuestionAction.SaveFavoriteColor -> setFavoriteColor(action.color)
@@ -40,14 +37,24 @@ class QuestionViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            _uiState.update { currentState ->
+                when (currentState) {
+                    is QuestionUiState.Initial -> currentState.copy(isFullLoading = true)
+                }
+            }
             getFavoriteColorUseCase().collectLatest { color ->
-                _selectedColor.value = color
+                // Update the UI state with the favorite color
+                _uiState.update {
+                    QuestionUiState.Initial(
+                        isFullLoading = false,
+                        selectedColor = color
+                    )
+                }
             }
         }
     }
 
     private fun setFavoriteColor(color: String) {
-        _selectedColor.update { color }
         _uiState.update { QuestionUiState.Initial(selectedColor = color) }
         viewModelScope.launch {
             saveFavoriteColorUseCase(color)
@@ -104,7 +111,9 @@ sealed interface QuestionUiState {
     /**
      * Initial state before any action is taken
      */
+    //TODO might be better having different types of states
     data class Initial(
+        val isFullLoading: Boolean = false,
         val isLoading: Boolean = false,
         val selectedColor: String? = null,
         val feedbackColor: String? = null,
